@@ -32,7 +32,10 @@ export async function generateStudyPermitPDF(formData) {
 
     // Load the PDF template (ignoreEncryption handles encrypted government forms)
     const templateBytes = fs.readFileSync(TEMPLATE_PATH);
-    const pdfDoc = await PDFDocument.load(templateBytes, { ignoreEncryption: true });
+    const pdfDoc = await PDFDocument.load(templateBytes, {
+      ignoreEncryption: true,
+      updateMetadata: false
+    });
 
     // Get the form
     const form = pdfDoc.getForm();
@@ -58,11 +61,12 @@ export async function generateStudyPermitPDF(formData) {
     // Fill the form fields
     fillFormFields(form, formData, fieldMapping);
 
-    // Flatten the form (optional - makes fields non-editable)
-    // form.flatten();
-
-    // Save the filled PDF
-    const pdfBytes = await pdfDoc.save();
+    // Save the filled PDF with options optimized for encrypted forms
+    console.log('💾 Saving filled PDF...');
+    const pdfBytes = await pdfDoc.save({
+      useObjectStreams: false,
+      addDefaultPage: false
+    });
     console.log('✅ PDF generated successfully');
 
     return pdfBytes;
