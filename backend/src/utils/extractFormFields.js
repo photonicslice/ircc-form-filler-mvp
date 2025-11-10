@@ -18,9 +18,9 @@ const __dirname = path.dirname(__filename);
  */
 export async function extractFormFields(pdfPath) {
   try {
-    // Read the PDF file
+    // Read the PDF file (ignoreEncryption handles encrypted government forms)
     const pdfBytes = fs.readFileSync(pdfPath);
-    const pdfDoc = await PDFDocument.load(pdfBytes);
+    const pdfDoc = await PDFDocument.load(pdfBytes, { ignoreEncryption: true });
 
     // Get the form
     const form = pdfDoc.getForm();

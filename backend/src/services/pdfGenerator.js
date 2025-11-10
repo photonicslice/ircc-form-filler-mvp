@@ -30,9 +30,9 @@ export async function generateStudyPermitPDF(formData) {
       );
     }
 
-    // Load the PDF template
+    // Load the PDF template (ignoreEncryption handles encrypted government forms)
     const templateBytes = fs.readFileSync(TEMPLATE_PATH);
-    const pdfDoc = await PDFDocument.load(templateBytes);
+    const pdfDoc = await PDFDocument.load(templateBytes, { ignoreEncryption: true });
 
     // Get the form
     const form = pdfDoc.getForm();
