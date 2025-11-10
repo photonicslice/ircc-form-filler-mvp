@@ -1,0 +1,266 @@
+/**
+ * Global Styles
+ * Tailwind CSS base styles and custom IRCC theme
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
+ * Custom IRCC Colors
+ * Based on Government of Canada design system
+ */
+:root {
+  --ircc-blue: #26374a;
+  --ircc-blue-light: #4d84c4;
+  --ircc-red: #af3c43;
+  --ircc-gray: #5b6770;
+}
+
+/**
+ * Base Styles
+ */
+@layer base {
+  html {
+    @apply antialiased;
+  }
+
+  body {
+    @apply bg-gray-50 text-gray-900;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-400 rounded-lg;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-500;
+  }
+}
+
+/**
+ * Component Styles
+ */
+@layer components {
+  /* Form Input Styles */
+  .form-input {
+    @apply w-full px-4 py-2 border border-gray-300 rounded-lg
+           focus:ring-2 focus:ring-blue-500 focus:border-transparent
+           transition duration-150 ease-in-out;
+  }
+
+  .form-input-error {
+    @apply border-red-500 focus:ring-red-500;
+  }
+
+  /* Button Styles */
+  .btn {
+    @apply px-6 py-2 rounded-lg font-medium transition duration-150 ease-in-out
+           focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+
+  .btn-primary {
+    @apply bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-200 text-gray-700 hover:bg-gray-300 focus:ring-gray-500;
+  }
+
+  .btn-danger {
+    @apply bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
+  }
+
+  /* Card Styles */
+  .card {
+    @apply bg-white rounded-lg shadow-md p-6;
+  }
+
+  /* Badge Styles */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-success {
+    @apply bg-green-100 text-green-800;
+  }
+
+  .badge-error {
+    @apply bg-red-100 text-red-800;
+  }
+
+  .badge-warning {
+    @apply bg-yellow-100 text-yellow-800;
+  }
+
+  .badge-info {
+    @apply bg-blue-100 text-blue-800;
+  }
+}
+
+/**
+ * Utility Classes
+ */
+@layer utilities {
+  /* IRCC Brand Colors */
+  .bg-ircc-blue {
+    background-color: var(--ircc-blue);
+  }
+
+  .bg-ircc-blue-light {
+    background-color: var(--ircc-blue-light);
+  }
+
+  .bg-ircc-red {
+    background-color: var(--ircc-red);
+  }
+
+  .text-ircc-blue {
+    color: var(--ircc-blue);
+  }
+
+  .text-ircc-blue-light {
+    color: var(--ircc-blue-light);
+  }
+
+  .text-ircc-red {
+    color: var(--ircc-red);
+  }
+
+  .text-ircc-gray {
+    color: var(--ircc-gray);
+  }
+
+  .border-ircc-blue {
+    border-color: var(--ircc-blue);
+  }
+
+  /* Focus Ring for IRCC Blue */
+  .focus-ring-ircc {
+    @apply focus:ring-2 focus:ring-offset-2;
+    --tw-ring-color: var(--ircc-blue-light);
+  }
+
+  /* Animation Utilities */
+  .fade-in {
+    animation: fadeIn 0.3s ease-in;
+  }
+
+  .slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  .pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+}
+
+/**
+ * Animations
+ */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/**
+ * Print Styles
+ */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    @apply bg-white;
+  }
+}
+
+/**
+ * Loading Spinner
+ */
+.spinner {
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top-color: var(--ircc-blue);
+  animation: spinner 0.6s linear infinite;
+}
+
+@keyframes spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/**
+ * Custom Checkbox and Radio Styles
+ */
+input[type="checkbox"]:checked,
+input[type="radio"]:checked {
+  background-color: var(--ircc-blue);
+  border-color: var(--ircc-blue);
+}
+
+input[type="checkbox"]:focus,
+input[type="radio"]:focus {
+  --tw-ring-color: var(--ircc-blue-light);
+}
+
+/**
+ * Smooth Scroll Behavior
+ */
+html {
+  scroll-behavior: smooth;
+}
+
+/**
+ * Select Dropdown Custom Styles
+ */
+select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+}
+
+/**
+ * Accessibility - Focus Visible
+ */
+*:focus-visible {
+  outline: 2px solid var(--ircc-blue-light);
+  outline-offset: 2px;
+}
+
+/**
+ * Dark Mode Support (Future Enhancement)
+ */
+@media (prefers-color-scheme: dark) {
+  /* Dark mode styles can be added here in future */
+}
