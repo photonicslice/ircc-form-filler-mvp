@@ -50,6 +50,8 @@ Thumbs.db
 # PDF Output (temporary files)
 generated-pdfs/
 *.pdf
+# Allow template PDFs to be tracked
+!backend/templates/*.pdf
 
 # Local Storage Backups
 storage-backups/
