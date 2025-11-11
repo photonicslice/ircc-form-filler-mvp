@@ -10,6 +10,9 @@
     "extract-fields": "node src/utils/extractFormFields.js",
     "test-pdf": "node src/utils/testPdfTemplate.js",
     "test-xfdf": "node src/utils/testXFDFGeneration.js",
+    "map-fields": "node src/utils/mapPdfFields.js",
+    "test-automation": "node src/utils/testBrowserAutomation.js",
+    "playwright-install": "playwright install chromium",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -25,6 +28,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "pdf-lib": "^1.17.1",
+    "playwright": "^1.40.1",
     "openai": "^4.20.1",
     "body-parser": "^1.20.2",
     "helmet": "^7.1.0",
