@@ -1,10 +1,10 @@
 /**
  * OS-Level Automation PDF Filler
- * Uses nut.js to control Adobe Acrobat/Reader at the OS level
+ * Uses robotjs to control Adobe Acrobat/Reader at the OS level
  * This works with the actual desktop application, not browser
  */
 
-import { mouse, keyboard, Key, screen, Button } from '@nut-tree/nut-js';
+import robot from 'robotjs';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import fs from 'fs';
@@ -75,24 +75,29 @@ export async function fillPDFWithDesktopAutomation(formData, outputPath) {
     console.log('⏳ Waiting for Adobe to open...');
     await sleep(5000); // Adjust based on your system speed
 
-    // Configure nut.js settings
-    mouse.config.mouseSpeed = 500; // Slower mouse movement for better accuracy
-    keyboard.config.autoDelayMs = 50; // Delay between keystrokes
+    // Configure robotjs settings
+    robot.setMouseDelay(100); // Delay between mouse actions
+    robot.setKeyboardDelay(50); // Delay between keystrokes
 
     // Fill fields
     await fillFieldsWithDesktopAutomation(formData, fieldMapping);
 
     // Save the file
     console.log('💾 Saving file...');
-    await keyboard.type(Key.LeftControl, Key.S); // Ctrl+S
+    robot.keyTap('s', ['control']); // Ctrl+S (Command+S on Mac)
     await sleep(1000);
 
     // Handle save dialog if it appears
-    await keyboard.type(Key.Enter); // Confirm save
+    robot.keyTap('enter'); // Confirm save
     await sleep(2000);
 
     // Close Adobe
-    await keyboard.type(Key.LeftAlt, Key.F4); // Alt+F4
+    const platform = os.platform();
+    if (platform === 'darwin') {
+      robot.keyTap('q', ['command']); // Cmd+Q on Mac
+    } else {
+      robot.keyTap('f4', ['alt']); // Alt+F4 on Windows/Linux
+    }
     await sleep(1000);
 
     // Copy saved file to output
@@ -127,7 +132,7 @@ async function openPDFInAdobe(pdfPath) {
 
   if (!adobePath) {
     throw new Error(
-      'Adobe Acrobat/Reader not found. Please install Adobe Acrobat Reader DC.\\n' +
+      'Adobe Acrobat/Reader not found. Please install Adobe Acrobat Reader DC.\n' +
       'Download from: https://get.adobe.com/reader/'
     );
   }
@@ -193,18 +198,18 @@ async function fillFieldsWithDesktopAutomation(formData, fieldMapping) {
  */
 async function fillWithTabNavigation(fieldsToFill, fieldMapping) {
   // Click on PDF to focus
-  await mouse.click(Button.LEFT);
+  robot.mouseClick();
   await sleep(500);
 
   // Navigate to first field
-  await keyboard.type(Key.Tab);
+  robot.keyTap('tab');
   await sleep(300);
 
   for (let i = 0; i < fieldsToFill.length; i++) {
     const field = fieldsToFill[i];
 
     if (!field.value) {
-      await keyboard.type(Key.Tab);
+      robot.keyTap('tab');
       await sleep(300);
       continue;
     }
@@ -212,11 +217,11 @@ async function fillWithTabNavigation(fieldsToFill, fieldMapping) {
     console.log(`  [${i + 1}/${fieldsToFill.length}] Filling: ${field.fieldName} = ${field.value}`);
 
     // Type the value
-    await keyboard.type(field.value.toString());
+    robot.typeString(field.value.toString());
     await sleep(200);
 
     // Move to next field
-    await keyboard.type(Key.Tab);
+    robot.keyTap('tab');
     await sleep(300);
   }
 }
@@ -239,19 +244,24 @@ async function fillWithCoordinates(fieldsToFill, fieldMapping) {
     console.log(`  Filling ${field.fieldName} at (${x}, ${y}): ${field.value}`);
 
     // Move mouse to field
-    await mouse.setPosition({ x, y });
+    robot.moveMouse(x, y);
     await sleep(200);
 
     // Click to focus
-    await mouse.click(Button.LEFT);
+    robot.mouseClick();
     await sleep(200);
 
-    // Clear existing value
-    await keyboard.type(Key.LeftControl, Key.A);
+    // Clear existing value (Ctrl+A or Cmd+A)
+    const platform = os.platform();
+    if (platform === 'darwin') {
+      robot.keyTap('a', ['command']);
+    } else {
+      robot.keyTap('a', ['control']);
+    }
     await sleep(100);
 
     // Type new value
-    await keyboard.type(field.value.toString());
+    robot.typeString(field.value.toString());
     await sleep(300);
   }
 }

@@ -3,7 +3,7 @@
  * Helps you map form field coordinates in Adobe Reader
  */
 
-import { mouse, keyboard, Key, screen } from '@nut-tree/nut-js';
+import robot from 'robotjs';
 import { exec } from 'child_process';
 import fs from 'fs';
 import path from 'path';
@@ -29,18 +29,18 @@ This tool helps you map field coordinates in Adobe Reader/Acrobat.
 
 How it works:
 1. Opens your PDF in Adobe
-2. You move your mouse over each field
-3. Press SPACE to capture coordinates
+2. You click on each field
+3. Press ENTER to capture coordinates
 4. Tool saves coordinates to mapping file
 
 Instructions:
 - Adobe will open with the PDF
-- Hover over the FIRST field (e.g., First Name)
-- Press SPACE to capture coordinates
+- Click on the FIRST field (e.g., First Name)
+- Press ENTER in this terminal to capture
 - Repeat for each field
-- Press 'q' + ENTER in terminal when done
+- Type 'done' when finished
 
-TIP: Click on a field first, then press SPACE to capture it
+TIP: Make sure Adobe window stays in the same position
   `);
 
   console.log('='.repeat(80));
@@ -102,15 +102,15 @@ TIP: Click on a field first, then press SPACE to capture it
 
       await new Promise((resolve) => {
         rl.question(`Click on field "${fieldName}" then press ENTER: `, async () => {
-          await sleep(500); // Give user time to move mouse away
+          await sleep(300); // Give user time to move mouse away
 
-          const position = await mouse.getPosition();
+          const mousePos = robot.getMousePos();
           mapping[fieldName] = {
-            coordinates: { x: position.x, y: position.y },
-            description: `Auto-captured at (${position.x}, ${position.y})`
+            coordinates: { x: mousePos.x, y: mousePos.y },
+            description: `Auto-captured at (${mousePos.x}, ${mousePos.y})`
           };
 
-          console.log(`  ✅ Captured ${fieldName}: (${position.x}, ${position.y})\n`);
+          console.log(`  ✅ Captured ${fieldName}: (${mousePos.x}, ${mousePos.y})\n`);
           resolve();
         });
       });
