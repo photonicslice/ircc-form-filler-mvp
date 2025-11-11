@@ -1,8 +1,38 @@
 # PDF Template Setup
 
+## Two Methods for Form Filling
+
+### Method 1: XFDF Data File Generation (⭐ Recommended)
+
+**Best for:** Encrypted government PDFs (like IMM 1294)
+
+Instead of modifying the PDF directly, we generate an XFDF data file that you import into the official PDF. This avoids encryption issues and ensures compatibility.
+
+**How it works:**
+1. User fills the web form
+2. Backend generates an XFDF file (XML with form data)
+3. User downloads XFDF + official PDF
+4. User imports XFDF into PDF using Adobe Reader
+5. Form auto-fills instantly
+
+**Advantages:**
+- ✅ No PDF corruption (Error 132)
+- ✅ Works with encrypted forms
+- ✅ Uses official unmodified PDF
+- ✅ Accepted by IRCC
+- ✅ Easy to verify data
+
+See [XFDF-IMPORT-INSTRUCTIONS.md](./XFDF-IMPORT-INSTRUCTIONS.md) for detailed user instructions.
+
+### Method 2: Direct PDF Modification (May Not Work)
+
+**Best for:** Unencrypted PDFs only
+
+Directly fills the PDF form fields programmatically. May fail with encrypted government forms.
+
 ## Required File
 
-Please place the IMM 1294 PDF template in this directory:
+For both methods, place the IMM 1294 PDF template in this directory:
 
 ```
 backend/templates/imm1294e.pdf
