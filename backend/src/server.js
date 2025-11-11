@@ -128,6 +128,7 @@ app.listen(PORT, () => {
   console.log('║   Available Endpoints:                                     ║');
   console.log('║   - GET  /health                                           ║');
   console.log('║   - POST /api/pdf/generate                                 ║');
+  console.log('║   - POST /api/pdf/generate-xfdf (⭐ Recommended)           ║');
   console.log('║   - POST /api/pdf/validate                                 ║');
   console.log('║   - POST /api/pdf/checklist                                ║');
   console.log('║   - POST /api/tips/get-tips                                ║');
