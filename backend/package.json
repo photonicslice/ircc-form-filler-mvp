@@ -12,6 +12,8 @@
     "test-xfdf": "node src/utils/testXFDFGeneration.js",
     "map-fields": "node src/utils/mapPdfFields.js",
     "test-automation": "node src/utils/testBrowserAutomation.js",
+    "map-adobe-fields": "node src/utils/mapAdobeFields.js",
+    "test-desktop-automation": "node src/utils/testDesktopAutomation.js",
     "playwright-install": "playwright install chromium",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -29,6 +31,7 @@
     "dotenv": "^16.3.1",
     "pdf-lib": "^1.17.1",
     "playwright": "^1.40.1",
+    "@nut-tree/nut-js": "^3.1.1",
     "openai": "^4.20.1",
     "body-parser": "^1.20.2",
     "helmet": "^7.1.0",
