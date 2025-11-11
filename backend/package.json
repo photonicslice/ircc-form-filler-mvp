@@ -9,6 +9,7 @@
     "dev": "nodemon src/server.js",
     "extract-fields": "node src/utils/extractFormFields.js",
     "test-pdf": "node src/utils/testPdfTemplate.js",
+    "test-xfdf": "node src/utils/testXFDFGeneration.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
