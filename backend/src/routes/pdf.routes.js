@@ -6,6 +6,7 @@
 import express from 'express';
 import { generateStudyPermitPDF } from '../services/pdfGenerator.js';
 import { generateXFDF } from '../services/xfdfGenerator.js';
+import { generateHTMLSummary } from '../services/dataSummaryGenerator.js';
 import { validateCompleteForm } from '../services/validator.js';
 import { generateChecklist, getChecklistSummary } from '../services/checklist.js';
 
@@ -107,6 +108,54 @@ router.post('/generate-xfdf', async (req, res) => {
 });
 
 /**
+ * POST /api/pdf/generate-summary
+ * Generate HTML data summary (⭐ RECOMMENDED for encrypted PDFs)
+ * User downloads HTML and references it while manually filling PDF
+ */
+router.post('/generate-summary', async (req, res) => {
+  try {
+    const { formData } = req.body;
+
+    if (!formData) {
+      return res.status(400).json({
+        success: false,
+        error: 'Form data is required'
+      });
+    }
+
+    // Validate form data
+    const validation = validateCompleteForm(formData);
+
+    if (!validation.isValid) {
+      return res.status(400).json({
+        success: false,
+        error: 'Form data contains validation errors',
+        validation
+      });
+    }
+
+    // Generate HTML summary
+    const htmlContent = generateHTMLSummary(formData);
+
+    // Set response headers for HTML download
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.setHeader('Content-Disposition', 'attachment; filename=imm1294e-data-summary.html');
+    res.setHeader('Content-Length', Buffer.byteLength(htmlContent));
+
+    // Send HTML file
+    res.send(htmlContent);
+
+  } catch (error) {
+    console.error('HTML summary generation error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to generate HTML summary',
+      message: error.message
+    });
+  }
+});
+
+/**
  * POST /api/pdf/validate
  * Validate form data without generating PDF
  */
@@ -183,11 +232,13 @@ router.get('/test', (req, res) => {
     success: true,
     message: 'PDF routes are working',
     availableEndpoints: [
-      'POST /api/pdf/generate - Generate filled PDF (may have issues with encrypted forms)',
-      'POST /api/pdf/generate-xfdf - Generate XFDF data file (recommended for encrypted forms)',
+      'POST /api/pdf/generate-summary - ⭐ Generate HTML data summary (RECOMMENDED for encrypted PDFs)',
+      'POST /api/pdf/generate - Generate filled PDF (may fail with encrypted forms)',
+      'POST /api/pdf/generate-xfdf - Generate XFDF data file (may be blocked by encryption)',
       'POST /api/pdf/validate - Validate form data',
       'POST /api/pdf/checklist - Generate document checklist'
-    ]
+    ],
+    recommendation: 'For encrypted IMM 1294 form, use /api/pdf/generate-summary for best results'
   });
 });
 
