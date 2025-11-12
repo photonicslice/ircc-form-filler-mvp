@@ -6,6 +6,9 @@
 import { useEffect } from 'react';
 import { StudyPurpose as StudyPurposeType, PROGRAM_LEVELS } from '../../types/form.types';
 import { validateStudyPurposeSection } from '../../utils/validation';
+import { useTips } from '../../contexts/TipContext';
+import TipIcon from '../common/TipIcon';
+import TipModal from '../common/TipModal';
 
 interface StudyPurposeProps {
   data: StudyPurposeType;
@@ -15,6 +18,9 @@ interface StudyPurposeProps {
 }
 
 export default function StudyPurpose({ data, updateData, errors, updateErrors }: StudyPurposeProps) {
+  // Tips context
+  const { openModal, staticTips, openTipModal, closeTipModal, requestAITip } = useTips();
+
   // Validate on data change
   useEffect(() => {
     const validationErrors = validateStudyPurposeSection(data);
@@ -60,8 +66,14 @@ export default function StudyPurpose({ data, updateData, errors, updateErrors }:
 
       {/* DLI Number */}
       <div>
-        <label htmlFor="dli" className="block text-sm font-medium text-gray-700 mb-2">
-          DLI Number <span className="text-red-500">*</span>
+        <label htmlFor="dli" className="flex items-center text-sm font-medium text-gray-700 mb-2">
+          DLI Number <span className="text-red-500 ml-1">*</span>
+          <TipIcon
+            fieldName="dli"
+            tooltip="Click for detailed help about DLI numbers"
+            priority="info"
+            onClick={() => openTipModal('dli')}
+          />
         </label>
         <input
           id="dli"
@@ -246,6 +258,18 @@ export default function StudyPurpose({ data, updateData, errors, updateErrors }:
           </div>
         </div>
       </div>
+
+      {/* Tip Modal */}
+      {openModal === 'dli' && staticTips.dli && (
+        <TipModal
+          fieldName="dli"
+          staticTip={staticTips.dli}
+          isOpen={openModal === 'dli'}
+          onClose={closeTipModal}
+          formData={data}
+          onRequestAITip={requestAITip}
+        />
+      )}
     </div>
   );
 }

@@ -8,6 +8,7 @@ import { FormData, INITIAL_FORM_DATA } from './types/form.types';
 import { loadFormData, saveFormData, clearFormData, hasFormData } from './utils/storage';
 import { loadMockData } from './services/api';
 import FormWizard from './components/FormWizard';
+import { TipProvider } from './contexts/TipContext';
 
 function App() {
   const [formData, setFormData] = useState<FormData>(INITIAL_FORM_DATA);
@@ -73,9 +74,10 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-ircc-blue-light to-gray-50">
-      {/* Header */}
-      <header className="bg-ircc-blue text-white shadow-lg">
+    <TipProvider formData={formData}>
+      <div className="min-h-screen bg-gradient-to-br from-ircc-blue-light to-gray-50">
+        {/* Header */}
+        <header className="bg-ircc-blue text-white shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -233,7 +235,8 @@ function App() {
           </div>
         </div>
       </footer>
-    </div>
+      </div>
+    </TipProvider>
   );
 }
 

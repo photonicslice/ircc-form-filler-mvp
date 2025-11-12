@@ -76,7 +76,7 @@ const STATIC_TIPS = {
  */
 router.post('/get-tips', async (req, res) => {
   try {
-    const { fieldName, context, useAI } = req.body;
+    const { fieldName, context, formData, useAI } = req.body;
 
     if (!fieldName) {
       return res.status(400).json({
@@ -91,11 +91,14 @@ router.post('/get-tips', async (req, res) => {
     // If AI is requested and available, generate dynamic tip
     if (useAI && openai) {
       try {
-        const aiTip = await generateAITip(fieldName, context);
+        // Use formData if provided, otherwise fall back to context
+        const contextData = formData || context;
+        const aiTip = await generateAITip(fieldName, contextData);
+
         return res.json({
           success: true,
-          tip: aiTip,
-          staticTip: staticTip || null,
+          aiTip: aiTip,  // Frontend expects 'aiTip' field
+          tip: staticTip || null,  // Also provide static tip as fallback
           source: 'ai'
         });
       } catch (aiError) {
@@ -204,45 +207,96 @@ router.get('/test', (req, res) => {
 /**
  * Generate AI-powered tip using OpenAI
  */
-async function generateAITip(fieldName, context) {
+async function generateAITip(fieldName, formData) {
   if (!openai) {
     throw new Error('OpenAI client not initialized');
   }
 
-  const prompt = `You are an expert on Canadian immigration and IRCC study permit applications.
-  
-Field: ${fieldName}
-Context: ${JSON.stringify(context, null, 2)}
+  // Extract relevant context from form data
+  const contextSummary = buildContextSummary(fieldName, formData);
 
-Provide clear, concise guidance for this field in the study permit application. Include:
-1. What this field means
-2. What information should be provided
-3. Common mistakes to avoid
-4. Any IRCC-specific requirements
+  const prompt = `You are an expert on Canadian immigration and IRCC study permit applications (IMM 1294 form).
 
-Keep the response under 200 words and be practical and helpful.`;
+FIELD: ${formatFieldName(fieldName)}
+
+USER'S CURRENT INFORMATION:
+${contextSummary}
+
+Based on the user's information above, provide personalized, actionable advice for the "${formatFieldName(fieldName)}" field.
+
+Your response should:
+1. Address their specific situation
+2. Provide concrete next steps or examples
+3. Mention any common mistakes to avoid
+4. Reference IRCC requirements when relevant
+
+Keep your response concise (under 200 words), friendly, and practical. Focus on what they need to do, not just what the field is.`;
 
   const completion = await openai.chat.completions.create({
     model: 'gpt-3.5-turbo',
     messages: [
       {
         role: 'system',
-        content: 'You are a helpful Canadian immigration expert assistant.'
+        content: 'You are a helpful Canadian immigration expert assistant providing personalized guidance for study permit applications. Be specific, practical, and encouraging.'
       },
       {
         role: 'user',
         content: prompt
       }
     ],
-    max_tokens: 300,
+    max_tokens: 350,
     temperature: 0.7
   });
 
-  return {
-    title: `AI Guidance: ${formatFieldName(fieldName)}`,
-    tip: completion.choices[0].message.content,
-    generatedAt: new Date().toISOString()
-  };
+  return completion.choices[0].message.content;
+}
+
+/**
+ * Build context summary from form data for AI personalization
+ */
+function buildContextSummary(fieldName, formData) {
+  if (!formData) {
+    return 'No form data available yet.';
+  }
+
+  const lines = [];
+
+  // Personal info
+  if (formData.personalInfo) {
+    const p = formData.personalInfo;
+    if (p.citizenship) lines.push(`- Citizenship: ${p.citizenship}`);
+    if (p.countryOfResidence) lines.push(`- Current residence: ${p.countryOfResidence}`);
+  }
+
+  // Study purpose
+  if (formData.studyPurpose) {
+    const s = formData.studyPurpose;
+    if (s.canadianInstitution) lines.push(`- Institution: ${s.canadianInstitution}`);
+    if (s.programName) lines.push(`- Program: ${s.programName}`);
+    if (s.programLevel) lines.push(`- Level: ${s.programLevel}`);
+    if (s.programDuration) lines.push(`- Duration: ${s.programDuration} months`);
+    if (s.programStartDate) lines.push(`- Start date: ${s.programStartDate}`);
+  }
+
+  // Financial info
+  if (formData.proofOfFunds) {
+    const f = formData.proofOfFunds;
+    if (f.annualTuitionFees) lines.push(`- Annual tuition: CAD $${f.annualTuitionFees}`);
+    if (f.availableFunds) lines.push(`- Available funds: CAD $${f.availableFunds}`);
+    if (f.fundingSource) lines.push(`- Funding source: ${f.fundingSource}`);
+  }
+
+  // Education history
+  if (formData.educationHistory) {
+    const e = formData.educationHistory;
+    if (e.highestEducationLevel) lines.push(`- Highest education: ${e.highestEducationLevel}`);
+  }
+
+  if (lines.length === 0) {
+    return 'User is just starting to fill out the form.';
+  }
+
+  return lines.join('\n');
 }
 
 /**
