@@ -19,42 +19,44 @@ Server should run on: `http://localhost:3001`
 curl -X POST http://localhost:3001/api/pdf/generate-summary \
   -H "Content-Type: application/json" \
   -d '{
-    "personalInfo": {
-      "firstName": "John",
-      "lastName": "Smith",
-      "dateOfBirth": "1995-03-15",
-      "nationality": "India",
-      "countryOfResidence": "India",
-      "email": "john.smith@email.com",
-      "phone": "+91-9876543210"
-    },
-    "passportInfo": {
-      "passportNumber": "K1234567",
-      "issueDate": "2020-01-10",
-      "expiryDate": "2030-01-09",
-      "issuingCountry": "India"
-    },
-    "educationHistory": {
-      "highestEducation": "bachelors",
-      "institutionName": "University of Mumbai",
-      "fieldOfStudy": "Computer Science",
-      "graduationYear": "2018"
-    },
-    "studyPurpose": {
-      "canadianInstitution": "University of Toronto",
-      "dli": "O19391173552",
-      "programName": "Master of Computer Science",
-      "programLevel": "masters",
-      "programStartDate": "2024-09-01",
-      "programDuration": "24",
-      "hasLetterOfAcceptance": true
-    },
-    "proofOfFunds": {
-      "annualTuitionFees": "35000",
-      "availableFunds": "60000",
-      "fundingSource": "family_support",
-      "hasSponsor": true,
-      "sponsorRelationship": "Parent"
+    "formData": {
+      "personalInfo": {
+        "firstName": "John",
+        "lastName": "Smith",
+        "dateOfBirth": "1995-03-15",
+        "nationality": "India",
+        "countryOfResidence": "India",
+        "email": "john.smith@email.com",
+        "phone": "+91-9876543210"
+      },
+      "passportInfo": {
+        "passportNumber": "K1234567",
+        "issueDate": "2020-01-10",
+        "expiryDate": "2030-01-09",
+        "issuingCountry": "India"
+      },
+      "educationHistory": {
+        "highestEducation": "bachelors",
+        "institutionName": "University of Mumbai",
+        "fieldOfStudy": "Computer Science",
+        "graduationYear": "2018"
+      },
+      "studyPurpose": {
+        "canadianInstitution": "University of Toronto",
+        "dli": "O123456789",
+        "programName": "Master of Computer Science",
+        "programLevel": "masters",
+        "programStartDate": "2026-09-01",
+        "programDuration": "24",
+        "hasLetterOfAcceptance": true
+      },
+      "proofOfFunds": {
+        "annualTuitionFees": "35000",
+        "availableFunds": "60000",
+        "fundingSource": "family_support",
+        "hasSponsor": true,
+        "sponsorRelationship": "Parent"
+      }
     }
   }' \
   --output form-summary.html
