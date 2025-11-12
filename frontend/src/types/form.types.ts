@@ -9,25 +9,37 @@
 
 /**
  * Personal Information Section
+ * Updated to match backend structure (familyName/givenNames)
  */
 export interface PersonalInfo {
-  firstName: string;
-  lastName: string;
-  dateOfBirth: string;
-  nationality: string;
-  countryOfResidence: string;
-  email: string;
-  phone: string;
+  familyName: string;          // Family name as shown on passport (was lastName)
+  givenNames: string;          // Given name(s) as shown on passport (was firstName)
+  sex: 'Male' | 'Female' | 'Another gender' | '';  // Sex/Gender
+  dateOfBirth: string;         // Date of birth (YYYY-MM-DD)
+  citizenship: string;         // Country of citizenship (was nationality)
+  countryOfResidence: string;  // Current country of residence
+  placeOfBirth?: {            // Place of birth (optional)
+    city?: string;
+    country?: string;
+  };
+  hasOtherNames?: boolean;     // Has other names/aliases
+  otherNames?: {               // Other names (if applicable)
+    familyName?: string;
+    givenNames?: string;
+  };
 }
 
 /**
  * Passport Information Section
+ * Updated to match backend structure
  */
 export interface PassportInfo {
-  passportNumber: string;
-  issueDate: string;
-  expiryDate: string;
-  issuingCountry: string;
+  number: string;              // Passport number (was passportNumber)
+  countryOfIssue: string;      // Country of issue (was issuingCountry)
+  issueDate: string;           // Issue date (YYYY-MM-DD)
+  expiryDate: string;          // Expiry date (YYYY-MM-DD)
+  taiwanPassport?: boolean;    // Using Taiwan passport with PIN
+  israeliPassport?: boolean;   // Using Israeli passport
 }
 
 /**
@@ -65,11 +77,59 @@ export interface ProofOfFunds {
 }
 
 /**
+ * Marital Information Section
+ */
+export interface MaritalInfo {
+  status: 'Single' | 'Married' | 'Common-law' | 'Divorced' | 'Separated' | 'Widowed' | 'Annulled' | '';
+  dateOfMarriage?: string;     // Date of marriage (if applicable)
+  spouse?: {                   // Spouse information (if applicable)
+    familyName?: string;
+    givenNames?: string;
+  };
+}
+
+/**
+ * Language Information Section
+ */
+export interface LanguageInfo {
+  nativeLanguage: string;                                      // Native language/Mother tongue
+  communicateInEnglishFrench: 'English' | 'French' | 'Both' | 'Neither' | '';  // Can communicate in English/French
+  mostAtEase?: string;                                         // Language most at ease
+  languageTest?: boolean;                                      // Taken language proficiency test
+}
+
+/**
+ * Contact Information Section
+ */
+export interface ContactInfo {
+  email: string;               // Email address
+  telephone: {                 // Primary telephone
+    type?: string;             // Type: Home, Cell, Business
+    countryCode?: string;      // Country code
+    number: string;            // Phone number
+    ext?: string;              // Extension
+  };
+  mailingAddress?: {           // Mailing address (optional)
+    streetNo?: string;
+    streetName?: string;
+    aptUnit?: string;
+    city?: string;
+    provinceState?: string;
+    country?: string;
+    postalCode?: string;
+  };
+}
+
+/**
  * Complete Form Data Structure
+ * Updated to include all essential sections
  */
 export interface FormData {
   personalInfo: PersonalInfo;
   passportInfo: PassportInfo;
+  maritalInfo: MaritalInfo;
+  languageInfo: LanguageInfo;
+  contactInfo: ContactInfo;
   educationHistory: EducationHistory;
   studyPurpose: StudyPurpose;
   proofOfFunds: ProofOfFunds;
@@ -92,6 +152,7 @@ export interface FormStep {
 
 /**
  * Form Steps Configuration
+ * Updated to include new required sections
  */
 export const FORM_STEPS: FormStep[] = [
   {
@@ -109,29 +170,43 @@ export const FORM_STEPS: FormStep[] = [
     section: 'passportInfo'
   },
   {
-    id: 'education-history',
+    id: 'marital-language',
     step: 3,
+    title: 'Marital & Language',
+    description: 'Marital status and language information',
+    section: 'maritalInfo'
+  },
+  {
+    id: 'contact-info',
+    step: 4,
+    title: 'Contact Information',
+    description: 'Email, phone, and address details',
+    section: 'contactInfo'
+  },
+  {
+    id: 'education-history',
+    step: 5,
     title: 'Education History',
     description: 'Tell us about your educational background',
     section: 'educationHistory'
   },
   {
     id: 'study-purpose',
-    step: 4,
+    step: 6,
     title: 'Study Purpose',
     description: 'Details about your Canadian study plans',
     section: 'studyPurpose'
   },
   {
     id: 'proof-of-funds',
-    step: 5,
+    step: 7,
     title: 'Proof of Funds',
     description: 'Financial information and funding sources',
     section: 'proofOfFunds'
   },
   {
     id: 'review-submit',
-    step: 6,
+    step: 8,
     title: 'Review & Submit',
     description: 'Review your information and generate documents',
     section: 'personalInfo' // Placeholder, this step reviews all sections
@@ -144,22 +219,35 @@ export const FORM_STEPS: FormStep[] = [
 
 /**
  * Initial Empty Form Data
+ * Updated to match new structure
  */
 export const INITIAL_FORM_DATA: FormData = {
   personalInfo: {
-    firstName: '',
-    lastName: '',
+    familyName: '',
+    givenNames: '',
+    sex: '',
     dateOfBirth: '',
-    nationality: '',
-    countryOfResidence: '',
-    email: '',
-    phone: ''
+    citizenship: '',
+    countryOfResidence: ''
   },
   passportInfo: {
-    passportNumber: '',
+    number: '',
+    countryOfIssue: '',
     issueDate: '',
-    expiryDate: '',
-    issuingCountry: ''
+    expiryDate: ''
+  },
+  maritalInfo: {
+    status: ''
+  },
+  languageInfo: {
+    nativeLanguage: '',
+    communicateInEnglishFrench: ''
+  },
+  contactInfo: {
+    email: '',
+    telephone: {
+      number: ''
+    }
   },
   educationHistory: {
     highestEducation: '',
@@ -312,6 +400,38 @@ export const FUNDING_SOURCES = [
   { value: 'loan', label: 'Education Loan' },
   { value: 'sponsor', label: 'Sponsor' },
   { value: 'other', label: 'Other' }
+];
+
+/**
+ * Sex/Gender Options
+ */
+export const SEX_OPTIONS = [
+  { value: 'Male', label: 'Male' },
+  { value: 'Female', label: 'Female' },
+  { value: 'Another gender', label: 'Another gender' }
+];
+
+/**
+ * Marital Status Options
+ */
+export const MARITAL_STATUS_OPTIONS = [
+  { value: 'Single', label: 'Single' },
+  { value: 'Married', label: 'Married' },
+  { value: 'Common-law', label: 'Common-law' },
+  { value: 'Divorced', label: 'Divorced' },
+  { value: 'Separated', label: 'Separated' },
+  { value: 'Widowed', label: 'Widowed' },
+  { value: 'Annulled', label: 'Annulled' }
+];
+
+/**
+ * Language Communication Options
+ */
+export const LANGUAGE_OPTIONS = [
+  { value: 'English', label: 'English only' },
+  { value: 'French', label: 'French only' },
+  { value: 'Both', label: 'Both English and French' },
+  { value: 'Neither', label: 'Neither' }
 ];
 
 /**
