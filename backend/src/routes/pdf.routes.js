@@ -5,6 +5,7 @@
 
 import express from 'express';
 import { generateStudyPermitPDF } from '../services/pdfGenerator.js';
+import { generateIMM1294PDF } from '../services/pdfFormGenerator.js';
 import { generateXFDF } from '../services/xfdfGenerator.js';
 import { generateHTMLSummary } from '../services/dataSummaryGenerator.js';
 import { validateCompleteForm } from '../services/validator.js';
@@ -156,6 +157,54 @@ router.post('/generate-summary', async (req, res) => {
 });
 
 /**
+ * POST /api/pdf/generate-form
+ * Generate IMM 1294 form from scratch (✨ NEW - No encryption issues!)
+ * Creates a brand new PDF that looks like the official form
+ */
+router.post('/generate-form', async (req, res) => {
+  try {
+    const { formData } = req.body;
+
+    if (!formData) {
+      return res.status(400).json({
+        success: false,
+        error: 'Form data is required'
+      });
+    }
+
+    // Validate form data
+    const validation = validateCompleteForm(formData);
+
+    if (!validation.isValid) {
+      return res.status(400).json({
+        success: false,
+        error: 'Form data contains validation errors',
+        validation
+      });
+    }
+
+    // Generate new PDF from scratch
+    const pdfBytes = await generateIMM1294PDF(formData);
+
+    // Set response headers for PDF download
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'attachment; filename=imm1294-study-permit.pdf');
+    res.setHeader('Content-Length', pdfBytes.length);
+
+    // Send PDF
+    res.send(Buffer.from(pdfBytes));
+
+  } catch (error) {
+    console.error('PDF form generation error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to generate PDF form',
+      message: error.message
+    });
+  }
+});
+
+/**
  * POST /api/pdf/validate
  * Validate form data without generating PDF
  */
@@ -232,13 +281,14 @@ router.get('/test', (req, res) => {
     success: true,
     message: 'PDF routes are working',
     availableEndpoints: [
-      'POST /api/pdf/generate-summary - ⭐ Generate HTML data summary (RECOMMENDED for encrypted PDFs)',
+      'POST /api/pdf/generate-form - ✨ Generate NEW PDF from scratch (RECOMMENDED - bypasses encryption!)',
+      'POST /api/pdf/generate-summary - Generate HTML data summary for manual filling',
       'POST /api/pdf/generate - Generate filled PDF (may fail with encrypted forms)',
       'POST /api/pdf/generate-xfdf - Generate XFDF data file (may be blocked by encryption)',
       'POST /api/pdf/validate - Validate form data',
       'POST /api/pdf/checklist - Generate document checklist'
     ],
-    recommendation: 'For encrypted IMM 1294 form, use /api/pdf/generate-summary for best results'
+    recommendation: 'Use /api/pdf/generate-form to create a brand new PDF that looks like the official form!'
   });
 });
 
