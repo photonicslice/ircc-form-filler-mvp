@@ -1,0 +1,206 @@
+{
+  "uci": "",
+  "serviceLanguage": "English",
+  "personalInfo": {
+    "familyName": "Smith",
+    "givenNames": "John Michael",
+    "hasOtherNames": false,
+    "otherNames": {
+      "familyName": "",
+      "givenNames": ""
+    },
+    "sex": "Male",
+    "dateOfBirth": "1995-03-15",
+    "placeOfBirth": {
+      "city": "Mumbai",
+      "country": "India"
+    },
+    "citizenship": "India",
+    "currentResidence": {
+      "country": "India",
+      "status": "Citizen",
+      "other": "",
+      "from": "1995-03-15",
+      "to": "2027-12-31"
+    },
+    "previousResidences": [],
+    "applyingFrom": {
+      "sameAsCurrent": true,
+      "country": "",
+      "status": "",
+      "other": "",
+      "from": "",
+      "to": ""
+    }
+  },
+  "maritalInfo": {
+    "status": "Single",
+    "dateOfMarriage": "",
+    "spouse": {
+      "familyName": "",
+      "givenNames": ""
+    },
+    "previouslyMarried": false,
+    "previousSpouse": {
+      "familyName": "",
+      "givenNames": "",
+      "dateOfBirth": "",
+      "relationshipType": "",
+      "from": "",
+      "to": ""
+    }
+  },
+  "languageInfo": {
+    "nativeLanguage": "Hindi",
+    "communicateInEnglishFrench": "English",
+    "mostAtEase": "English",
+    "languageTest": false
+  },
+  "passportInfo": {
+    "number": "K1234567",
+    "countryOfIssue": "India",
+    "issueDate": "2020-01-10",
+    "expiryDate": "2030-01-09",
+    "taiwanPassport": false,
+    "israeliPassport": false
+  },
+  "nationalIdInfo": {
+    "hasDocument": false,
+    "documentNumber": "",
+    "countryOfIssue": "",
+    "issueDate": "",
+    "expiryDate": ""
+  },
+  "usPRInfo": {
+    "isPermanentResident": false,
+    "uscisNumber": "",
+    "expiryDate": ""
+  },
+  "contactInfo": {
+    "mailingAddress": {
+      "poBox": "",
+      "aptUnit": "101",
+      "streetNo": "123",
+      "streetName": "Main Street",
+      "city": "Mumbai",
+      "country": "India",
+      "provinceState": "Maharashtra",
+      "postalCode": "400001",
+      "district": ""
+    },
+    "residentialSameAsMailing": true,
+    "residentialAddress": {
+      "aptUnit": "",
+      "streetNo": "",
+      "streetName": "",
+      "city": "",
+      "country": "",
+      "provinceState": "",
+      "postalCode": "",
+      "district": ""
+    },
+    "telephone": {
+      "type": "Cell",
+      "isCanadaUS": false,
+      "countryCode": "91",
+      "number": "9876543210",
+      "ext": ""
+    },
+    "alternateTelephone": {
+      "type": "",
+      "isCanadaUS": true,
+      "countryCode": "",
+      "number": "",
+      "ext": ""
+    },
+    "fax": {
+      "isCanadaUS": true,
+      "countryCode": "",
+      "number": "",
+      "ext": ""
+    },
+    "email": "john.smith@email.com"
+  },
+  "studyDetails": {
+    "schoolName": "University of Toronto",
+    "levelOfStudy": "Post-secondary - Masters",
+    "fieldOfStudy": "Computer Science",
+    "schoolAddress": {
+      "province": "Ontario",
+      "city": "Toronto",
+      "address": "27 King's College Circle, Toronto, ON M5S 1A1"
+    },
+    "dliNumber": "O19391173552",
+    "studentId": "ST2024001",
+    "duration": {
+      "from": "2026-09-01",
+      "to": "2028-08-31"
+    },
+    "costs": {
+      "tuition": "35000",
+      "roomAndBoard": "15000",
+      "other": "5000"
+    },
+    "fundsAvailable": "60000",
+    "expensesPaidBy": "Parents",
+    "expensesPaidByOther": "",
+    "pal": {
+      "documentNumber": "",
+      "expiryDate": ""
+    },
+    "caq": {
+      "certificateNumber": "",
+      "expiryDate": ""
+    }
+  },
+  "educationHistory": {
+    "hasPostSecondary": true,
+    "highestEducation": {
+      "from": "2014-08",
+      "to": "2018-05",
+      "fieldAndLevel": "Bachelor of Science - Computer Science",
+      "schoolName": "University of Mumbai",
+      "city": "Mumbai",
+      "country": "India",
+      "provinceState": "Maharashtra"
+    }
+  },
+  "employmentHistory": [
+    {
+      "from": "2018-07",
+      "to": "2024-06",
+      "occupation": "Software Engineer",
+      "companyName": "Tech Solutions India Pvt Ltd",
+      "city": "Mumbai",
+      "country": "India",
+      "provinceState": "Maharashtra"
+    }
+  ],
+  "backgroundInfo": {
+    "health": {
+      "tuberculosis": false,
+      "physicalMentalDisorder": false,
+      "details": ""
+    },
+    "immigration": {
+      "overstayed": false,
+      "refusedVisa": false,
+      "previousApplication": false,
+      "details": ""
+    },
+    "criminal": {
+      "hasRecord": false,
+      "details": ""
+    },
+    "military": {
+      "served": false,
+      "details": ""
+    },
+    "political": {
+      "memberOfParty": false
+    },
+    "warCrimes": {
+      "witnessed": false
+    }
+  }
+}
