@@ -9,6 +9,8 @@ import ProgressBar from './ProgressBar';
 import StepNavigation from './StepNavigation';
 import PersonalInfo from './steps/PersonalInfo';
 import PassportInfo from './steps/PassportInfo';
+import MaritalLanguage from './steps/MaritalLanguage';
+import ContactInfo from './steps/ContactInfo';
 import EducationHistory from './steps/EducationHistory';
 import StudyPurpose from './steps/StudyPurpose';
 import ProofOfFunds from './steps/ProofOfFunds';
@@ -84,6 +86,26 @@ export default function FormWizard({ formData, setFormData }: FormWizardProps) {
         );
       case 3:
         return (
+          <MaritalLanguage
+            maritalData={formData.maritalInfo}
+            languageData={formData.languageInfo}
+            updateMaritalData={(data) => updateFormData('maritalInfo', data)}
+            updateLanguageData={(data) => updateFormData('languageInfo', data)}
+            errors={sectionErrors['maritalLanguage'] || {}}
+            updateErrors={(errors) => updateSectionErrors('maritalLanguage', errors)}
+          />
+        );
+      case 4:
+        return (
+          <ContactInfo
+            data={formData.contactInfo}
+            updateData={(data) => updateFormData('contactInfo', data)}
+            errors={sectionErrors['contactInfo'] || {}}
+            updateErrors={(errors) => updateSectionErrors('contactInfo', errors)}
+          />
+        );
+      case 5:
+        return (
           <EducationHistory
             data={formData.educationHistory}
             updateData={(data) => updateFormData('educationHistory', data)}
@@ -91,7 +113,7 @@ export default function FormWizard({ formData, setFormData }: FormWizardProps) {
             updateErrors={(errors) => updateSectionErrors('educationHistory', errors)}
           />
         );
-      case 4:
+      case 6:
         return (
           <StudyPurpose
             data={formData.studyPurpose}
@@ -100,7 +122,7 @@ export default function FormWizard({ formData, setFormData }: FormWizardProps) {
             updateErrors={(errors) => updateSectionErrors('studyPurpose', errors)}
           />
         );
-      case 5:
+      case 7:
         return (
           <ProofOfFunds
             data={formData.proofOfFunds}
@@ -109,7 +131,7 @@ export default function FormWizard({ formData, setFormData }: FormWizardProps) {
             updateErrors={(errors) => updateSectionErrors('proofOfFunds', errors)}
           />
         );
-      case 6:
+      case 8:
         return (
           <ReviewSubmit
             formData={formData}
@@ -140,7 +162,7 @@ export default function FormWizard({ formData, setFormData }: FormWizardProps) {
         {renderStep()}
 
         {/* Navigation */}
-        {currentStep < 6 && (
+        {currentStep < 8 && (
           <StepNavigation
             currentStep={currentStep}
             totalSteps={FORM_STEPS.length}

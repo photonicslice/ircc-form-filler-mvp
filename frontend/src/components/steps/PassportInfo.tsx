@@ -37,23 +37,23 @@ export default function PassportInfo({ data, updateData, errors, updateErrors }:
     <div className="space-y-6">
       {/* Passport Number */}
       <div>
-        <label htmlFor="passportNumber" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="number" className="block text-sm font-medium text-gray-700 mb-2">
           Passport Number <span className="text-red-500">*</span>
         </label>
         <input
-          id="passportNumber"
+          id="number"
           type="text"
-          value={data.passportNumber}
-          onChange={(e) => handleChange('passportNumber', e.target.value.toUpperCase())}
+          value={data.number}
+          onChange={(e) => handleChange('number', e.target.value.toUpperCase())}
           className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-ircc-blue focus:border-transparent ${
-            errors.passportNumber ? 'border-red-500' : 'border-gray-300'
+            errors.number ? 'border-red-500' : 'border-gray-300'
           }`}
           placeholder="A12345678"
           maxLength={15}
           style={{ textTransform: 'uppercase' }}
         />
-        {errors.passportNumber && (
-          <p className="mt-1 text-sm text-red-600">{errors.passportNumber}</p>
+        {errors.number && (
+          <p className="mt-1 text-sm text-red-600">{errors.number}</p>
         )}
         <p className="mt-1 text-xs text-gray-500">
           Enter in uppercase letters and numbers only (6-15 characters)
@@ -62,15 +62,15 @@ export default function PassportInfo({ data, updateData, errors, updateErrors }:
 
       {/* Issuing Country */}
       <div>
-        <label htmlFor="issuingCountry" className="block text-sm font-medium text-gray-700 mb-2">
-          Issuing Country <span className="text-red-500">*</span>
+        <label htmlFor="countryOfIssue" className="block text-sm font-medium text-gray-700 mb-2">
+          Country of Issue <span className="text-red-500">*</span>
         </label>
         <select
-          id="issuingCountry"
-          value={data.issuingCountry}
-          onChange={(e) => handleChange('issuingCountry', e.target.value)}
+          id="countryOfIssue"
+          value={data.countryOfIssue}
+          onChange={(e) => handleChange('countryOfIssue', e.target.value)}
           className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-ircc-blue focus:border-transparent ${
-            errors.issuingCountry ? 'border-red-500' : 'border-gray-300'
+            errors.countryOfIssue ? 'border-red-500' : 'border-gray-300'
           }`}
         >
           <option value="">Select issuing country</option>
@@ -80,8 +80,8 @@ export default function PassportInfo({ data, updateData, errors, updateErrors }:
             </option>
           ))}
         </select>
-        {errors.issuingCountry && (
-          <p className="mt-1 text-sm text-red-600">{errors.issuingCountry}</p>
+        {errors.countryOfIssue && (
+          <p className="mt-1 text-sm text-red-600">{errors.countryOfIssue}</p>
         )}
         <p className="mt-1 text-xs text-gray-500">
           Country that issued your passport
