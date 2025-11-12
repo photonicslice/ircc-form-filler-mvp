@@ -13,11 +13,32 @@ const MARGIN_RIGHT = 562;
 const MARGIN_TOP = 742;
 
 /**
+ * Normalize form data to handle both frontend (firstName/lastName)
+ * and complete form (familyName/givenNames) structures
+ */
+function normalizeFormData(formData) {
+  const personal = formData.personalInfo || {};
+
+  // Map firstName/lastName to familyName/givenNames if needed
+  if (personal.firstName && !personal.givenNames) {
+    personal.givenNames = personal.firstName;
+  }
+  if (personal.lastName && !personal.familyName) {
+    personal.familyName = personal.lastName;
+  }
+
+  return formData;
+}
+
+/**
  * Generate IMM 1294 PDF from form data
  * @param {object} formData - Complete form data
  * @returns {Promise<Uint8Array>} - PDF bytes
  */
 export async function generateIMM1294PDF(formData) {
+  // Normalize data to handle both frontend and backend structures
+  const normalizedData = normalizeFormData(formData);
+
   const pdfDoc = await PDFDocument.create();
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
@@ -26,14 +47,14 @@ export async function generateIMM1294PDF(formData) {
   const headingSize = 12;
 
   // Extract form sections
-  const personal = formData.personalInfo || {};
-  const passport = formData.passportInfo || {};
-  const education = formData.educationHistory || {};
-  const study = formData.studyPurpose || {};
-  const funds = formData.proofOfFunds || {};
-  const contact = formData.contactInfo || {};
-  const marital = formData.maritalInfo || {};
-  const language = formData.languageInfo || {};
+  const personal = normalizedData.personalInfo || {};
+  const passport = normalizedData.passportInfo || {};
+  const education = normalizedData.educationHistory || {};
+  const study = normalizedData.studyPurpose || {};
+  const funds = normalizedData.proofOfFunds || {};
+  const contact = normalizedData.contactInfo || {};
+  const marital = normalizedData.maritalInfo || {};
+  const language = normalizedData.languageInfo || {};
 
   // PAGE 1: Personal Details
   const page1 = pdfDoc.addPage([PAGE_WIDTH, PAGE_HEIGHT]);
@@ -58,10 +79,10 @@ export async function generateIMM1294PDF(formData) {
   drawLabel(page1, '1. Full name', MARGIN_LEFT, y, fontBold, fontSize);
   y -= 15;
   drawLabel(page1, 'Family name (as shown on passport or travel document)', MARGIN_LEFT + 10, y, font, 8);
-  drawValue(page1, personal.lastName || '', MARGIN_LEFT + 10, y - 15, font, fontSize);
+  drawValue(page1, personal.familyName || personal.lastName || '', MARGIN_LEFT + 10, y - 15, font, fontSize);
 
   drawLabel(page1, 'Given name(s) (as shown on passport or travel document)', 320, y, font, 8);
-  drawValue(page1, personal.firstName || '', 320, y - 15, font, fontSize);
+  drawValue(page1, personal.givenNames || personal.firstName || '', 320, y - 15, font, fontSize);
   y -= 40;
 
   // Sex

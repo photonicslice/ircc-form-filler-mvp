@@ -59,7 +59,8 @@ async function apiRequest<T>(
  */
 export async function generatePDF(formData: FormData): Promise<Blob> {
   try {
-    const blob = await apiRequest<Blob>('/api/pdf/generate', {
+    // Use /generate-form endpoint which creates PDF from scratch (no template needed)
+    const blob = await apiRequest<Blob>('/api/pdf/generate-form', {
       method: 'POST',
       body: JSON.stringify({ formData })
     });

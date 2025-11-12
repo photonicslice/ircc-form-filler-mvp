@@ -175,14 +175,14 @@ router.post('/generate-form', async (req, res) => {
       });
     }
 
-    // Validate form data with minimal validation
-    const validation = validateMinimalForm(formData);
+    // Skip strict validation for /generate-form since it handles missing fields gracefully
+    // Just check that we have at least some basic data
+    const hasBasicData = formData.personalInfo || formData.passportInfo || formData.studyPurpose;
 
-    if (!validation.isValid) {
+    if (!hasBasicData) {
       return res.status(400).json({
         success: false,
-        error: 'Form data contains validation errors',
-        validation
+        error: 'Form data must contain at least personal info, passport info, or study purpose'
       });
     }
 

@@ -496,8 +496,168 @@ export async function generateCompleteIMM1294PDF(formData) {
   drawLabel(page4, '6. E-mail address', MARGIN_LEFT, y, fontBold, fontSize);
   drawValue(page4, contact.email || '', MARGIN_LEFT + 5, y - 12, font, fontSize);
 
-  // Continue with Page 5, 6, 7, 8 for Study Details, Education, Employment, Background...
-  // (Truncated for length - but follows same pattern)
+  // PAGE 5: Study Details, Education, Employment
+  const page5 = pdfDoc.addPage([PAGE_WIDTH, PAGE_HEIGHT]);
+  y = MARGIN_TOP;
+
+  drawText(page5, 'Applicant Name', MARGIN_LEFT, y, font, 9);
+  drawValue(page5, `${personal.familyName || ''}, ${personal.givenNames || ''}`, MARGIN_LEFT + 100, y, font, 9);
+  drawText(page5, 'Date of Birth', 400, y, font, 9);
+  drawValue(page5, formatDate(personal.dateOfBirth), 480, y, font, 9);
+  y -= 20;
+
+  drawText(page5, 'PAGE 5 OF 5', MARGIN_RIGHT - 100, y, font, 9);
+  y -= 30;
+
+  // DETAILS OF INTENDED STUDY
+  drawSectionHeader(page5, 'DETAILS OF INTENDED STUDY IN CANADA', MARGIN_LEFT, y, fontBold, headingSize);
+  y -= 20;
+
+  drawLabel(page5, '1. Level of study', MARGIN_LEFT, y, fontBold, fontSize);
+  drawValue(page5, study.level || '', MARGIN_LEFT + 10, y - 12, font, fontSize);
+
+  drawLabel(page5, '2. Field of study', 250, y, fontBold, fontSize);
+  drawValue(page5, study.field || '', 250, y - 12, font, fontSize);
+  y -= 25;
+
+  drawLabel(page5, '3. Name of school/institution/facility', MARGIN_LEFT, y, fontBold, fontSize);
+  drawValue(page5, study.institution || '', MARGIN_LEFT + 10, y - 12, font, fontSize);
+  y -= 25;
+
+  drawLabel(page5, '4. Name of program of study', MARGIN_LEFT, y, fontBold, fontSize);
+  drawValue(page5, study.programName || '', MARGIN_LEFT + 10, y - 12, font, fontSize);
+  y -= 25;
+
+  drawLabel(page5, '5. Designated Learning Institution Number (DLI#)', MARGIN_LEFT, y, fontBold, fontSize);
+  drawValue(page5, study.dli || '', MARGIN_LEFT + 10, y - 12, font, fontSize);
+  y -= 25;
+
+  drawLabel(page5, '6. Start date (YYYY-MM-DD)', MARGIN_LEFT, y, fontBold, fontSize);
+  drawValue(page5, formatDate(study.startDate), MARGIN_LEFT + 150, y, font, fontSize);
+
+  drawLabel(page5, '7. Expected completion date', 300, y, fontBold, fontSize);
+  drawValue(page5, formatDate(study.expectedEndDate), 300, y - 12, font, fontSize);
+  y -= 25;
+
+  drawLabel(page5, '8. Cost of studies (tuition only)', MARGIN_LEFT, y, fontBold, fontSize);
+  drawValue(page5, study.tuitionCost || '', MARGIN_LEFT + 10, y - 12, font, fontSize);
+
+  drawLabel(page5, 'Currency', 250, y, font, labelSize);
+  drawValue(page5, study.currency || 'CAD', 250, y - 12, font, fontSize);
+  y -= 30;
+
+  // EDUCATION HISTORY
+  drawSectionHeader(page5, 'EDUCATION', MARGIN_LEFT, y, fontBold, headingSize);
+  y -= 20;
+
+  drawLabel(page5, '1. Number of years of education successfully completed', MARGIN_LEFT, y, fontBold, fontSize);
+  drawValue(page5, education.yearsCompleted || '', MARGIN_RIGHT - 80, y, font, fontSize);
+  y -= 15;
+
+  if (education.schools && education.schools.length > 0) {
+    drawLabel(page5, '2. Schools attended during last 10 years', MARGIN_LEFT, y, fontBold, fontSize);
+    y -= 15;
+
+    education.schools.slice(0, 2).forEach((school, index) => {
+      if (y < 100) return; // Prevent overflow
+
+      drawLabel(page5, `School ${index + 1}:`, MARGIN_LEFT + 10, y, font, fontSize);
+      y -= 12;
+
+      drawLabel(page5, 'Name', MARGIN_LEFT + 15, y, font, labelSize);
+      drawValue(page5, school.name || '', MARGIN_LEFT + 15, y - 10, font, fontSize);
+
+      drawLabel(page5, 'City/Town', 300, y, font, labelSize);
+      drawValue(page5, school.city || '', 300, y - 10, font, fontSize);
+      y -= 20;
+
+      drawLabel(page5, 'Country', MARGIN_LEFT + 15, y, font, labelSize);
+      drawValue(page5, school.country || '', MARGIN_LEFT + 15, y - 10, font, fontSize);
+
+      drawLabel(page5, 'From', 200, y, font, labelSize);
+      drawValue(page5, formatDate(school.from), 200, y - 10, font, fontSize);
+
+      drawLabel(page5, 'To', 300, y, font, labelSize);
+      drawValue(page5, formatDate(school.to), 300, y - 10, font, fontSize);
+
+      drawLabel(page5, 'Field of study', 400, y, font, labelSize);
+      drawValue(page5, school.field || '', 400, y - 10, font, fontSize);
+      y -= 25;
+    });
+  } else {
+    y -= 15;
+  }
+
+  // EMPLOYMENT HISTORY
+  if (y < 200) {
+    y -= 30;
+  }
+
+  drawSectionHeader(page5, 'EMPLOYMENT', MARGIN_LEFT, y, fontBold, headingSize);
+  y -= 20;
+
+  drawLabel(page5, '1. a) In what language will you be taught?', MARGIN_LEFT, y, fontBold, fontSize);
+  drawValue(page5, study.languageOfInstruction || 'English', MARGIN_RIGHT - 100, y, font, fontSize);
+  y -= 15;
+
+  if (employment && employment.length > 0) {
+    drawLabel(page5, '2. Employment during last 10 years', MARGIN_LEFT, y, fontBold, fontSize);
+    y -= 15;
+
+    employment.slice(0, 1).forEach((job, index) => {
+      if (y < 100) return;
+
+      drawLabel(page5, 'Employer', MARGIN_LEFT + 10, y, font, labelSize);
+      drawValue(page5, job.employer || '', MARGIN_LEFT + 10, y - 10, font, fontSize);
+
+      drawLabel(page5, 'Position', 300, y, font, labelSize);
+      drawValue(page5, job.position || '', 300, y - 10, font, fontSize);
+      y -= 20;
+
+      drawLabel(page5, 'From', MARGIN_LEFT + 10, y, font, labelSize);
+      drawValue(page5, formatDate(job.from), MARGIN_LEFT + 10, y - 10, font, fontSize);
+
+      drawLabel(page5, 'To', 150, y, font, labelSize);
+      drawValue(page5, formatDate(job.to), 150, y - 10, font, fontSize);
+
+      drawLabel(page5, 'City/Town', 250, y, font, labelSize);
+      drawValue(page5, job.city || '', 250, y - 10, font, fontSize);
+
+      drawLabel(page5, 'Country', 400, y, font, labelSize);
+      drawValue(page5, job.country || '', 400, y - 10, font, fontSize);
+      y -= 25;
+    });
+  }
+
+  // BACKGROUND INFORMATION
+  if (y < 150) {
+    y = MARGIN_TOP - 50;
+  } else {
+    y -= 30;
+  }
+
+  drawSectionHeader(page5, 'BACKGROUND INFORMATION', MARGIN_LEFT, y, fontBold, headingSize);
+  y -= 20;
+
+  if (background) {
+    const questions = [
+      { key: 'refusedVisa', label: '1. Have you ever been refused a visa or permit, denied entry or ordered to leave Canada or any other country?' },
+      { key: 'criminalOffense', label: '2. Have you ever committed, been arrested for, been charged with or convicted of any criminal offence in any country?' },
+      { key: 'medicalCondition', label: '3. Do you have any physical or mental disorder that requires social and/or health services, other than medication, during a stay in Canada?' }
+    ];
+
+    questions.forEach((q) => {
+      if (y < 80) return;
+      drawLabel(page5, q.label, MARGIN_LEFT, y, font, labelSize);
+      drawValue(page5, background[q.key] ? 'Yes' : 'No', MARGIN_RIGHT - 80, y, font, fontSize);
+      y -= 18;
+    });
+  }
+
+  // Footer
+  y = 50;
+  drawText(page5, 'This form is for information purposes only and does not constitute legal advice.', MARGIN_LEFT, y, font, 8);
+  drawText(page5, 'For official IMM 1294 form, visit: canada.ca/study-permit', MARGIN_LEFT, y - 12, font, 8);
 
   // Save and return PDF
   const pdfBytes = await pdfDoc.save();
