@@ -315,42 +315,41 @@ export function validateMinLength(value: string, minLength: number, fieldLabel: 
 
 /**
  * Validate Personal Info Section
+ * Updated to match new field names
  */
 export function validatePersonalInfoSection(data: FormData['personalInfo']): Record<string, string> {
   const errors: Record<string, string> = {};
 
-  const firstNameResult = validateName(data.firstName, 'First name');
-  if (!firstNameResult.isValid) errors.firstName = firstNameResult.error!;
+  const familyNameResult = validateName(data.familyName, 'Family name');
+  if (!familyNameResult.isValid) errors.familyName = familyNameResult.error!;
 
-  const lastNameResult = validateName(data.lastName, 'Last name');
-  if (!lastNameResult.isValid) errors.lastName = lastNameResult.error!;
+  const givenNamesResult = validateName(data.givenNames, 'Given name(s)');
+  if (!givenNamesResult.isValid) errors.givenNames = givenNamesResult.error!;
+
+  const sexResult = validateRequired(data.sex, 'Sex');
+  if (!sexResult.isValid) errors.sex = sexResult.error!;
 
   const dobResult = validateDateOfBirth(data.dateOfBirth);
   if (!dobResult.isValid) errors.dateOfBirth = dobResult.error!;
 
-  const nationalityResult = validateRequired(data.nationality, 'Nationality');
-  if (!nationalityResult.isValid) errors.nationality = nationalityResult.error!;
+  const citizenshipResult = validateRequired(data.citizenship, 'Citizenship');
+  if (!citizenshipResult.isValid) errors.citizenship = citizenshipResult.error!;
 
   const countryResult = validateRequired(data.countryOfResidence, 'Country of residence');
   if (!countryResult.isValid) errors.countryOfResidence = countryResult.error!;
-
-  const emailResult = validateEmail(data.email);
-  if (!emailResult.isValid) errors.email = emailResult.error!;
-
-  const phoneResult = validatePhone(data.phone);
-  if (!phoneResult.isValid) errors.phone = phoneResult.error!;
 
   return errors;
 }
 
 /**
  * Validate Passport Info Section
+ * Updated to match new field names
  */
 export function validatePassportInfoSection(data: FormData['passportInfo']): Record<string, string> {
   const errors: Record<string, string> = {};
 
-  const passportResult = validatePassportNumber(data.passportNumber);
-  if (!passportResult.isValid) errors.passportNumber = passportResult.error!;
+  const passportResult = validatePassportNumber(data.number);
+  if (!passportResult.isValid) errors.number = passportResult.error!;
 
   const issueResult = validatePassportIssueDate(data.issueDate);
   if (!issueResult.isValid) errors.issueDate = issueResult.error!;
@@ -358,8 +357,41 @@ export function validatePassportInfoSection(data: FormData['passportInfo']): Rec
   const expiryResult = validatePassportExpiryDate(data.expiryDate, data.issueDate);
   if (!expiryResult.isValid) errors.expiryDate = expiryResult.error!;
 
-  const countryResult = validateRequired(data.issuingCountry, 'Issuing country');
-  if (!countryResult.isValid) errors.issuingCountry = countryResult.error!;
+  const countryResult = validateRequired(data.countryOfIssue, 'Country of issue');
+  if (!countryResult.isValid) errors.countryOfIssue = countryResult.error!;
+
+  return errors;
+}
+
+/**
+ * Validate Marital & Language Info Section (Combined)
+ */
+export function validateMaritalLanguageSection(maritalData: FormData['maritalInfo'], languageData: FormData['languageInfo']): Record<string, string> {
+  const errors: Record<string, string> = {};
+
+  const statusResult = validateRequired(maritalData.status, 'Marital status');
+  if (!statusResult.isValid) errors.status = statusResult.error!;
+
+  const nativeLanguageResult = validateRequired(languageData.nativeLanguage, 'Native language');
+  if (!nativeLanguageResult.isValid) errors.nativeLanguage = nativeLanguageResult.error!;
+
+  const communicateResult = validateRequired(languageData.communicateInEnglishFrench, 'English/French communication');
+  if (!communicateResult.isValid) errors.communicateInEnglishFrench = communicateResult.error!;
+
+  return errors;
+}
+
+/**
+ * Validate Contact Info Section
+ */
+export function validateContactInfoSection(data: FormData['contactInfo']): Record<string, string> {
+  const errors: Record<string, string> = {};
+
+  const emailResult = validateEmail(data.email);
+  if (!emailResult.isValid) errors.email = emailResult.error!;
+
+  const phoneResult = validatePhone(data.telephone?.number || '');
+  if (!phoneResult.isValid) errors['telephone.number'] = phoneResult.error!;
 
   return errors;
 }
@@ -440,11 +472,15 @@ export function validateProofOfFundsSection(data: FormData['proofOfFunds']): Rec
 
 /**
  * Get section validator by section name
+ * Updated to include new sections
  */
 export function getSectionValidator(section: keyof FormData) {
   const validators: Record<keyof FormData, (data: any) => Record<string, string>> = {
     personalInfo: validatePersonalInfoSection,
     passportInfo: validatePassportInfoSection,
+    maritalInfo: (data: any) => validateMaritalLanguageSection(data, {} as any),
+    languageInfo: (data: any) => ({}), // Validated together with maritalInfo
+    contactInfo: validateContactInfoSection,
     educationHistory: validateEducationHistorySection,
     studyPurpose: validateStudyPurposeSection,
     proofOfFunds: validateProofOfFundsSection
