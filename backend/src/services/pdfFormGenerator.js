@@ -106,7 +106,7 @@ export async function generateIMM1294PDF(formData) {
 
   // Citizenship
   drawLabel(page1, '6. Citizenship', MARGIN_LEFT, y, fontBold, fontSize);
-  drawValue(page1, personal.nationality || '', MARGIN_LEFT + 10, y - 15, font, fontSize);
+  drawValue(page1, personal.citizenship || personal.nationality || '', MARGIN_LEFT + 10, y - 15, font, fontSize);
   y -= 35;
 
   // Current country of residence
@@ -121,6 +121,20 @@ export async function generateIMM1294PDF(formData) {
   drawText(page2, 'PAGE 2 OF 5', MARGIN_RIGHT - 100, y, font, 10);
   y -= 30;
 
+  // Section: MARITAL STATUS
+  drawSectionHeader(page2, 'MARITAL STATUS', MARGIN_LEFT, y, fontBold, headingSize);
+  y -= 25;
+
+  drawLabel(page2, 'Current marital status', MARGIN_LEFT + 10, y, font, fontSize);
+  drawValue(page2, marital?.status || '', MARGIN_LEFT + 10, y - 15, font, fontSize);
+
+  if (marital?.spouse) {
+    drawLabel(page2, 'Spouse name', 320, y, font, fontSize);
+    const spouseName = `${marital.spouse.familyName || ''} ${marital.spouse.givenNames || ''}`.trim();
+    drawValue(page2, spouseName, 320, y - 15, font, fontSize);
+  }
+  y -= 50;
+
   // Section: LANGUAGE(S)
   drawSectionHeader(page2, 'LANGUAGE(S)', MARGIN_LEFT, y, fontBold, headingSize);
   y -= 25;
@@ -129,7 +143,7 @@ export async function generateIMM1294PDF(formData) {
   drawValue(page2, language?.nativeLanguage || '', MARGIN_LEFT + 10, y - 15, font, fontSize);
 
   drawLabel(page2, 'b) Are you able to communicate in English and/or French?', 320, y, font, fontSize);
-  drawValue(page2, language?.englishFrench || 'English', 320, y - 15, font, fontSize);
+  drawValue(page2, language?.communicateInEnglishFrench || language?.englishFrench || 'English', 320, y - 15, font, fontSize);
   y -= 50;
 
   // Section: PASSPORT
@@ -137,10 +151,10 @@ export async function generateIMM1294PDF(formData) {
   y -= 25;
 
   drawLabel(page2, '1. Passport number', MARGIN_LEFT, y, fontBold, fontSize);
-  drawValue(page2, passport.passportNumber || '', MARGIN_LEFT + 10, y - 15, font, fontSize);
+  drawValue(page2, passport.number || passport.passportNumber || '', MARGIN_LEFT + 10, y - 15, font, fontSize);
 
   drawLabel(page2, '2. Country or territory of issue', 200, y, fontBold, fontSize);
-  drawValue(page2, passport.issuingCountry || '', 200, y - 15, font, fontSize);
+  drawValue(page2, passport.countryOfIssue || passport.issuingCountry || '', 200, y - 15, font, fontSize);
   y -= 35;
 
   drawLabel(page2, '3. Issue date', MARGIN_LEFT, y, fontBold, fontSize);
@@ -155,26 +169,40 @@ export async function generateIMM1294PDF(formData) {
   y -= 25;
 
   drawLabel(page2, 'Email address', MARGIN_LEFT, y, fontBold, fontSize);
-  drawValue(page2, personal.email || contact?.email || '', MARGIN_LEFT + 10, y - 15, font, fontSize);
+  drawValue(page2, contact?.email || personal.email || '', MARGIN_LEFT + 10, y - 15, font, fontSize);
   y -= 35;
 
   drawLabel(page2, 'Telephone number', MARGIN_LEFT, y, fontBold, fontSize);
-  drawValue(page2, personal.phone || contact?.phone || '', MARGIN_LEFT + 10, y - 15, font, fontSize);
+  const phoneNumber = contact?.telephone?.number || personal.phone || '';
+  const phoneType = contact?.telephone?.type ? `(${contact.telephone.type})` : '';
+  const countryCode = contact?.telephone?.countryCode || '';
+  const fullPhone = `${countryCode} ${phoneNumber} ${phoneType}`.trim();
+  drawValue(page2, fullPhone, MARGIN_LEFT + 10, y - 15, font, fontSize);
   y -= 35;
 
   // Current mailing address
-  if (contact?.mailingAddress) {
+  if (contact?.mailingAddress && (contact.mailingAddress.streetName || contact.mailingAddress.city)) {
     drawLabel(page2, 'Current mailing address', MARGIN_LEFT, y, fontBold, fontSize);
     y -= 15;
-    drawLabel(page2, 'Street name', MARGIN_LEFT + 10, y, font, 8);
-    drawValue(page2, contact.mailingAddress.street || '', MARGIN_LEFT + 10, y - 15, font, fontSize);
-    y -= 30;
+
+    const streetAddress = `${contact.mailingAddress.streetNo || ''} ${contact.mailingAddress.streetName || ''}`.trim();
+    if (streetAddress) {
+      drawLabel(page2, 'Street address', MARGIN_LEFT + 10, y, font, 8);
+      drawValue(page2, streetAddress, MARGIN_LEFT + 10, y - 15, font, fontSize);
+      y -= 30;
+    }
+
+    if (contact.mailingAddress.aptUnit) {
+      drawLabel(page2, 'Apt/Unit', MARGIN_LEFT + 10, y, font, 8);
+      drawValue(page2, contact.mailingAddress.aptUnit, MARGIN_LEFT + 10, y - 15, font, fontSize);
+      y -= 30;
+    }
 
     drawLabel(page2, 'City/Town', MARGIN_LEFT + 10, y, font, 8);
     drawValue(page2, contact.mailingAddress.city || '', MARGIN_LEFT + 10, y - 15, font, fontSize);
 
     drawLabel(page2, 'Province/State', 250, y, font, 8);
-    drawValue(page2, contact.mailingAddress.province || '', 250, y - 15, font, fontSize);
+    drawValue(page2, contact.mailingAddress.provinceState || contact.mailingAddress.province || '', 250, y - 15, font, fontSize);
 
     drawLabel(page2, 'Postal code', 400, y, font, 8);
     drawValue(page2, contact.mailingAddress.postalCode || '', 400, y - 15, font, fontSize);
