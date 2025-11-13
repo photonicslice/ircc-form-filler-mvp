@@ -165,6 +165,11 @@ export function TipProvider({ children, formData }: TipProviderProps) {
       if (data.success && data.aiTip) {
         return data.aiTip;
       } else if (data.success && data.tip) {
+        // If tip is an object (static tip fallback), extract the tip text
+        if (typeof data.tip === 'object' && data.tip.tip) {
+          return data.tip.tip;
+        }
+        // If tip is already a string, return it
         return data.tip;
       } else {
         throw new Error('No tip returned from API');
