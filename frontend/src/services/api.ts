@@ -210,19 +210,40 @@ export async function loadMockData(scenario: string = 'default'): Promise<FormDa
 function getMockDataFallback(scenario: string): FormData {
   const mockData: FormData = {
     personalInfo: {
-      firstName: 'Priya',
-      lastName: 'Sharma',
+      givenNames: 'Priya',
+      familyName: 'Sharma',
+      sex: 'Female',
       dateOfBirth: '1998-03-15',
-      nationality: 'India',
-      countryOfResidence: 'India',
-      email: 'priya.sharma@example.com',
-      phone: '+91-98765-43210'
+      citizenship: 'India',
+      countryOfResidence: 'India'
     },
     passportInfo: {
-      passportNumber: 'K1234567',
+      number: 'K1234567',
       issueDate: '2020-01-15',
       expiryDate: '2030-01-14',
-      issuingCountry: 'India'
+      countryOfIssue: 'India'
+    },
+    maritalInfo: {
+      maritalStatus: 'Single'
+    },
+    languageInfo: {
+      english: 'Fluent',
+      french: 'None'
+    },
+    contactInfo: {
+      email: 'priya.sharma@example.com',
+      telephone: {
+        type: 'Mobile',
+        number: '+919876543210'
+      },
+      mailingAddress: {
+        streetNumber: '123',
+        streetName: 'Main Street',
+        city: 'Delhi',
+        province: 'Delhi',
+        postalCode: '110001',
+        country: 'India'
+      }
     },
     educationHistory: {
       highestEducation: 'bachelors',

@@ -51,7 +51,7 @@ export default function ReviewSubmit({ formData, onEdit }: ReviewSubmitProps) {
     setIsGeneratingPDF(true);
     try {
       const pdfBlob = await generatePDF(formData);
-      downloadPDF(pdfBlob, `study-permit-${formData.personalInfo.lastName}-${Date.now()}.pdf`);
+      downloadPDF(pdfBlob, `study-permit-${formData.personalInfo.familyName}-${Date.now()}.pdf`);
       setPdfGenerated(true);
     } catch (error: any) {
       alert(`Failed to generate PDF: ${error.message}`);
@@ -128,15 +128,15 @@ export default function ReviewSubmit({ formData, onEdit }: ReviewSubmitProps) {
           <dl className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
             <div>
               <dt className="text-gray-500">Full Name</dt>
-              <dd className="font-medium text-gray-900">{formData.personalInfo.firstName} {formData.personalInfo.lastName}</dd>
+              <dd className="font-medium text-gray-900">{formData.personalInfo.givenNames} {formData.personalInfo.familyName}</dd>
             </div>
             <div>
               <dt className="text-gray-500">Date of Birth</dt>
               <dd className="font-medium text-gray-900">{formData.personalInfo.dateOfBirth}</dd>
             </div>
             <div>
-              <dt className="text-gray-500">Nationality</dt>
-              <dd className="font-medium text-gray-900">{formData.personalInfo.nationality}</dd>
+              <dt className="text-gray-500">Citizenship</dt>
+              <dd className="font-medium text-gray-900">{formData.personalInfo.citizenship}</dd>
             </div>
             <div>
               <dt className="text-gray-500">Country of Residence</dt>
@@ -144,11 +144,11 @@ export default function ReviewSubmit({ formData, onEdit }: ReviewSubmitProps) {
             </div>
             <div>
               <dt className="text-gray-500">Email</dt>
-              <dd className="font-medium text-gray-900">{formData.personalInfo.email}</dd>
+              <dd className="font-medium text-gray-900">{formData.contactInfo?.email || 'Not provided'}</dd>
             </div>
             <div>
               <dt className="text-gray-500">Phone</dt>
-              <dd className="font-medium text-gray-900">{formData.personalInfo.phone}</dd>
+              <dd className="font-medium text-gray-900">{formData.contactInfo?.telephone?.number || 'Not provided'}</dd>
             </div>
           </dl>
         </div>
@@ -167,11 +167,11 @@ export default function ReviewSubmit({ formData, onEdit }: ReviewSubmitProps) {
           <dl className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
             <div>
               <dt className="text-gray-500">Passport Number</dt>
-              <dd className="font-medium text-gray-900">{formData.passportInfo.passportNumber}</dd>
+              <dd className="font-medium text-gray-900">{formData.passportInfo.number}</dd>
             </div>
             <div>
               <dt className="text-gray-500">Issuing Country</dt>
-              <dd className="font-medium text-gray-900">{formData.passportInfo.issuingCountry}</dd>
+              <dd className="font-medium text-gray-900">{formData.passportInfo.countryOfIssue}</dd>
             </div>
             <div>
               <dt className="text-gray-500">Issue Date</dt>

@@ -10,7 +10,7 @@ const router = express.Router();
 
 // Initialize OpenAI client (only if API key is provided)
 let openai = null;
-if (process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== 'your_openai_api_key_here') {
+if (process.env.OPENAI_API_KEY) {
   openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
   });
