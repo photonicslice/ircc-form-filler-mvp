@@ -11,9 +11,13 @@ const router = express.Router();
 // Initialize OpenAI client (only if API key is provided)
 let openai = null;
 if (process.env.OPENAI_API_KEY) {
+  console.log('✅ OpenAI API Key detected - AI tips enabled');
+  console.log('   Key starts with:', process.env.OPENAI_API_KEY.substring(0, 20) + '...');
   openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
   });
+} else {
+  console.log('⚠️  No OpenAI API Key found - falling back to static tips only');
 }
 
 /**

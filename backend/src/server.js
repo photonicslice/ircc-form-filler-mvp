@@ -3,16 +3,15 @@
  * Main Express server setup with middleware and routes
  */
 
+// CRITICAL: Load env config FIRST - this ensures dotenv.config() runs before ALL other imports
+import './config/env.js';
+
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import dotenv from 'dotenv';
 import pdfRoutes from './routes/pdf.routes.js';
 import tipsRoutes from './routes/tips.routes.js';
-
-// Load environment variables
-dotenv.config();
 
 // Initialize Express app
 const app = express();
