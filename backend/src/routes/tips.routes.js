@@ -4,20 +4,18 @@
  */
 
 import express from 'express';
-import OpenAI from 'openai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const router = express.Router();
 
-// Initialize OpenAI client (only if API key is provided)
-let openai = null;
-if (process.env.OPENAI_API_KEY) {
-  console.log('✅ OpenAI API Key detected - AI tips enabled');
-  console.log('   Key starts with:', process.env.OPENAI_API_KEY.substring(0, 20) + '...');
-  openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
-  });
+// Initialize Gemini client (only if API key is provided)
+let gemini = null;
+if (process.env.GEMINI_API_KEY) {
+  console.log('✅ Gemini API Key detected - AI tips enabled');
+  console.log('   Key starts with:', process.env.GEMINI_API_KEY.substring(0, 20) + '...');
+  gemini = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 } else {
-  console.log('⚠️  No OpenAI API Key found - falling back to static tips only');
+  console.log('⚠️  No Gemini API Key found - falling back to static tips only');
 }
 
 /**
@@ -93,7 +91,7 @@ router.post('/get-tips', async (req, res) => {
     const staticTip = STATIC_TIPS[fieldName];
 
     // If AI is requested and available, generate dynamic tip
-    if (useAI && openai) {
+    if (useAI && gemini) {
       try {
         // Use formData if provided, otherwise fall back to context
         const contextData = formData || context;
@@ -187,7 +185,7 @@ router.get('/all', (req, res) => {
   res.json({
     success: true,
     tips: STATIC_TIPS,
-    aiAvailable: !!openai
+    aiAvailable: !!gemini
   });
 });
 
@@ -209,11 +207,11 @@ router.get('/test', (req, res) => {
 // ============================================================================
 
 /**
- * Generate AI-powered tip using OpenAI
+ * Generate AI-powered tip using Google Gemini
  */
 async function generateAITip(fieldName, formData) {
-  if (!openai) {
-    throw new Error('OpenAI client not initialized');
+  if (!gemini) {
+    throw new Error('Gemini client not initialized');
   }
 
   // Extract relevant context from form data
@@ -236,23 +234,13 @@ Your response should:
 
 Keep your response concise (under 200 words), friendly, and practical. Focus on what they need to do, not just what the field is.`;
 
-  const completion = await openai.chat.completions.create({
-    model: 'gpt-3.5-turbo',
-    messages: [
-      {
-        role: 'system',
-        content: 'You are a helpful Canadian immigration expert assistant providing personalized guidance for study permit applications. Be specific, practical, and encouraging.'
-      },
-      {
-        role: 'user',
-        content: prompt
-      }
-    ],
-    max_tokens: 350,
-    temperature: 0.7
-  });
+  // Use Gemini 2.5 Flash model (fast and efficient for text generation)
+  const model = gemini.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
-  return completion.choices[0].message.content;
+  const result = await model.generateContent(prompt);
+  const response = await result.response;
+
+  return response.text();
 }
 
 /**
